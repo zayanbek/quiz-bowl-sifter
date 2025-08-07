@@ -1,30 +1,17 @@
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws SQLException, IOException {
 
-        /*
+        AccessQuestions obj = new AccessQuestions();
 
-        String query = "java";
-        
-        String fp = "D:\\CodingProjects\\Java_Projects\\Quiz_Bowl_Sifter\\src\\main\\java\\";
+        String[] questions = obj.select("black hole", new int[]{2, 3, 4, 5}, null, null);
 
-        QAFileReader reader = new QAFileReader(fp + "questions.txt", fp + "answers.txt");
-
-        ArrayList<Integer> indices = reader.getQuestionIndices(query);
-
-        String[] questions = reader.getQuestions(indices);
-
-        WordFrequencyCounter counter = new WordFrequencyCounter(questions);
-
-        ArrayList<UniqueWord> freq_list = counter.count();
-
-        for(UniqueWord uw : freq_list) System.out.println(uw);
-
-        */
-
-        System.out.println("Hello World");
+        System.out.println(questions.length + "\n");
+        for (String q : questions) System.out.println(q + "\n");
 
     }
 }
