@@ -7,48 +7,49 @@ import java.util.ArrayList;
 
 public class AccessQuestions {
 
-    // category and subcategory are optional and you dont need both
-    public String[] select (String answer, int[] difficulties, String category, String subcategory) throws SQLException, IOException {
+    private String prepareSelectQuery (String answer, int[] difficulties, String category, String subcategory) {
 
-        ArrayList<String> questions = new ArrayList<>();
+        String query = "SELECT question FROM tossups WHERE answer_sanitized ILIKE '" + answer + "%'";
 
-        StringBuilder sql = new StringBuilder("SELECT question FROM tossups WHERE answer ILIKE ?");
-        ArrayList<Object> params = new ArrayList<>();
-        params.add("%" + answer + "%");
-
-
+        // Add in all the difficulties
         if (difficulties != null && difficulties.length > 0) {
-            sql.append(" AND difficulty IN (");
+            query += " AND difficulty IN (";
+
             for (int i = 0; i < difficulties.length; i++) {
-                sql.append("?");
-                if (i < difficulties.length - 1) {
-                    sql.append(",");
-                }
-                params.add(difficulties[i]);
+                query += String.valueOf(difficulties[i]);
+
+                // Commas for all except last term
+                if (i < difficulties.length - 1) query += ",";
             }
-            sql.append(")");
+
+            query += ")";
         }
 
         if (category != null) {
-            sql.append(" AND category = ?");
-            params.add(category);
+            query += " AND category = '" + category + "'";
         } else if (subcategory != null) {
-            sql.append(" AND subcategory = ?");
-            params.add(subcategory);
+            query += " AND subcategory = '" + subcategory + "'";
         }
 
+        return query;
+    }
+
+    // category and subcategory are optional but you dont need both
+    public String[] select (String answer, int[] difficulties, String category, String subcategory) throws IOException {
+
+        String query = prepareSelectQuery(answer, difficulties, category, subcategory);
+
+        ArrayList<String> questions = new ArrayList<>();
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
-            for (int i = 0; i < params.size(); i++) {
-                ps.setObject(i + 1, params.get(i));
-            }
+            ResultSet rs = ps.executeQuery();
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    questions.add(rs.getString("question"));
-                }
-            }
+            while (rs.next()) questions.add(rs.getString("question"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return questions.toArray(new String[0]);
