@@ -1,4 +1,4 @@
-package database;
+package dao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
