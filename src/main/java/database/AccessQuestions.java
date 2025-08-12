@@ -1,3 +1,5 @@
+package database;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,7 +37,7 @@ public class AccessQuestions {
     }
 
     // category and subcategory are optional but you dont need both
-    public String[] select (String answer, int[] difficulties, String category, String subcategory) throws IOException {
+    public String[] select (String answer, int[] difficulties, String category, String subcategory) {
 
         String query = prepareSelectQuery(answer, difficulties, category, subcategory);
 
@@ -49,6 +51,8 @@ public class AccessQuestions {
             while (rs.next()) questions.add(rs.getString("question"));
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
