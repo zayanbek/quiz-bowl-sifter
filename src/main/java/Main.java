@@ -8,10 +8,18 @@ public class Main {
 
         AccessQuestions obj = new AccessQuestions();
 
-        String[] questions = obj.select("black hole", new int[]{2, 3, 4, 5}, null, null);
+        String[] questions = obj.select(
+            "isaac newton", new int[]{2, 3, 4, 5}, null, null
+        );
 
-        System.out.println(questions.length + "\n");
-        for (String q : questions) System.out.println(q + "\n");
+        WordFrequencyCounter wfc = new WordFrequencyCounter(questions);
+
+        ArrayList<UniqueWord> uniqueWords = wfc.count();
+
+        System.out.println("number questions processed: " + questions.length + "\n");
+        for (UniqueWord uw : unqiqueWords) {
+            System.out.println(uw.getCount() + "\t" + uw.getWord());
+        }
 
     }
 }
