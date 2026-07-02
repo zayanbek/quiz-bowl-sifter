@@ -1,63 +1,28 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WordFrequencyCounter {
 
     String[] questions;
 
-
     public WordFrequencyCounter(String[] questions) {
         this.questions = questions;
     }
 
-    private void splitRecursive(String question, int index, ArrayList<String> words) {
-        int length = question.length();
+    public HashMap<String, Integer> count() {
 
-        // Base case: end of string
-        if (index >= length) return;
-
-        // Skip any leading spaces
-        while (index < length && question.charAt(index) == ' ') index++;
-
-        int end = index;
-        while (end < length && question.charAt(end) != ' ') {
-            end++;
-        }
-
-        // Extract word and add to list
-        String word = question.substring(index, end);
-        words.add(word);
-
-        // Recurse on the remaining part
-        splitRecursive(question, end, words);
-    }
-
-    public ArrayList<UniqueWord> count() {
-
-        ArrayList<UniqueWord> frequencyList = new ArrayList<>();
-
-        ArrayList<String> words = new ArrayList<>();
+        HashMap<String, Integer> frequencyMap = new HashMap<>();
 
         for (String question : questions) {
-            splitRecursive(question, 0, words);
-        }
 
-        for (String word : words) {
+            String[] words = question.split("\\s+"); // Split on one or more spaces
 
-            boolean found = false;
-            for (UniqueWord uw : frequencyList) {
-                if (word.equals(uw.getWord())) {
-                    uw.incrementCount();
-                    found = true;
-                    break;
+            for (String word : words) {
+                if (!word.isEmpty()) {
+                    frequencyMap.put(word, frequencyMap.getOrDefault(word, 0) + 1);
                 }
             }
-
-            if(!found) frequencyList.add(new UniqueWord(word, 1));
-
         }
 
-        return frequencyList;
-
+        return frequencyMap;
     }
-
 }
